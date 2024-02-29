@@ -1,0 +1,102 @@
+.add-service-center {
+    /* display: flex; */
+    background: white;
+    margin: 30px auto;
+    padding: 50px;
+    min-width: 900px;
+    /* gap: 50px; */
+    max-width: 1000px;
+}
+
+.add-service-center-itemfield {
+    display: grid;
+    gap: 14px;
+    font-size: 24px;
+    margin-bottom: 25px;
+}
+
+.add-service-center-inputfield {
+    display: grid;
+    grid-template-columns: 1fr 0fr;
+    align-items: center;
+    gap: 60px;
+}
+
+.add-service-center-location,
+.add-service-center-operating-hours,
+.add-service-center-date-picker {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+}
+
+input,
+textarea,
+select {
+    padding: 12px;
+    font-family: serif;
+    font-size: 20px;
+    border-radius: 7px;
+    color: #7b7b7b;
+    border: 1px solid #7b7b7b8d;
+    /* border: 1px solid #c3c3c3; */
+    resize: none;
+}
+
+.addproduct-thumnail-img {
+    /* height: 120px;
+    width: 120px; */
+    max-width: 100%;
+    max-height: 400px;
+    border-radius: 10px;
+    object-fit: contain;
+    margin: 10px 0px;
+}
+
+.add-service-center-btns {
+    display: flex;
+    justify-content: space-between;
+}
+
+.add-service-center-btns1 {
+    display: flex;
+    justify-content: end;
+}
+
+.input-icon {
+    width: 45px;
+}
+
+.heading-add-input {
+    display: flex;
+    justify-content: space-between;
+    /* margin-bottom: 20px; */
+}
+
+.add-service-center-itemfield ul {
+    display: grid;
+    gap: 10px;
+}
+
+.add-service-center-itemfield li {
+    display: flex;
+    justify-content: space-between;
+}
+
+.edit-delete-btn {
+    display: flex;
+    gap: 10px;
+}
+
+.add-service-center-itemfield-save-btn {
+    display: contents;
+}
+
+/* .add-service-center-selector {
+    padding: 10px;
+    width: 300px;
+    height: 50px;
+    font-size: 14px;
+    color: #7b7b7b;
+    border: 1px solid #7b7b7b8d;
+} */

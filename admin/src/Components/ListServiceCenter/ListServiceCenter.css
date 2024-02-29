@@ -1,0 +1,6 @@
+.list-service-center {
+    width: 100%;
+    margin: 50px;
+    display: grid;
+    gap: 50px;
+}
