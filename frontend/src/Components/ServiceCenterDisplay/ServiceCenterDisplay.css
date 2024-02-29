@@ -1,0 +1,34 @@
+.service-center-display-upper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 50px;
+    font-size: 30px;
+    gap: 100px;
+}
+
+.service-center-display-left {
+    border: 2px outset;
+    padding: 30px 100px;
+    border-radius: 50px;
+}
+
+.service-center-display-right {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    border: 2px inset;
+    border-radius: 50px;
+    height: fit-content;
+}
+
+.service-center-display-right-heading {
+    font-size: 42px;
+    font-weight: 600;
+    font-variant-caps: all-small-caps;
+    margin: 18px 0 20px;
+}
+
+.service-center-display-lower {
+    width: 100%;
+    margin: 130px 0;
+}

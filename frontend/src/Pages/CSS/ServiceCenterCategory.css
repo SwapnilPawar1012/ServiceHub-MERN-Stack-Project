@@ -1,0 +1,16 @@
+.service-center-category {
+    min-height: 760px;
+}
+
+.service-center-category-services {
+    margin: 25px 50px 50px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 40px;
+}
+
+.service-center-category-indexSort {
+    font-size: 22px;
+    margin: 10px 0 0 50px;
+}

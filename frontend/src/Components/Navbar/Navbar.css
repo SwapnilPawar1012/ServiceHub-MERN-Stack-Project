@@ -1,0 +1,48 @@
+.navbar {
+    display: flex;
+    width: 100%;
+    padding: 15px;
+    background: antiquewhite;
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    font-size: 50px;
+    font-weight: 700;
+    margin: 0 0 4px 68px;
+}
+
+p {
+    margin: 0;
+}
+
+
+.nav-login-profile {
+    position: absolute;
+    right: 0;
+    display: flex;
+    margin: 0 68px 0 0;
+    gap: 50px;
+}
+
+.btn {
+    padding: 15px 50px;
+    font-size: x-large;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.nav-profile {
+    width: 68px;
+    display: flex;
+    border-radius: 50px;
+    background: darkgray;
+    justify-content: center;
+    border: 1px solid #999;
+}
+
+.nav-profile_icon {
+    width: 40px;
+}
