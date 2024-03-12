@@ -1,11 +1,15 @@
 import React from "react";
 import "./App.css";
-import { Navbar } from "./Components/Navbar/Navbar";
-import { Footer } from "./Components/Footer/Footer";
+import { Navbar } from "./Components/Navbar";
+import { Footer } from "./Components/Footer";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Home } from "./Pages/Home";
 import { ServiceCenterCategory } from "./Pages/ServiceCenterCategory";
-import { ServiceCenter } from "./Components/ServiceCenter/ServiceCenter";
+import { ServiceCenter } from "./Components/ServiceCenter";
+import { Admin } from "./Pages/Admin";
+import { LoginSignup } from "./Pages/LoginSignup";
+import { AddServiceCenter } from "./Components/Admin/AddServiceCenter";
+import { ListServiceCenter } from "./Components/ListServiceCenter";
 
 const App = () => {
   return (
@@ -14,6 +18,10 @@ const App = () => {
         <Navbar />
         <Routes>
           <Route path="/home" element={<Home />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/loginsignup" element={<LoginSignup />} />
+          <Route path="/addservicecenter" element={<AddServiceCenter />} />
+          <Route path="/listservicecenter" element={<ListServiceCenter />} />
           {/** Mojar Category Service Centers Related Routes */}
           <Route path="/" element={<ServiceCenterCategory />} />
           <Route path="/electonics_and_appliances" />

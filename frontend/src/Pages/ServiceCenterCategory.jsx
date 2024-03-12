@@ -1,11 +1,23 @@
-import React, {  } from "react";
+import React, { useState, useEffect } from "react";
 import "./CSS/ServiceCenterCategory.css";
-import { Item } from "../Components/Item/Item";
-import all_service_centers from "../Components/Assets/all_service_centers";
-// import { ServiceCenterContext } from "../Context/ServiceCenterContext";
+import { Item } from "../Components/Item";
+// import all_service_centers from "../Assets/all_service_centers";
 
 export const ServiceCenterCategory = (props) => {
-  // const { all_service_centers } = useContext(ServiceCenterContext);
+  const [all_service_centers, setAllServiceCenters] = useState([]);
+  console.log("all_service_centers " + all_service_centers);
+
+  const fetchInfo = async () => {
+    await fetch("http://localhost:4000/allservicecenters")
+      .then((resp) => resp.json())
+      .then((data) => {
+        setAllServiceCenters(data);
+      });
+  };
+
+  useEffect(() => {
+    fetchInfo();
+  }, []);
 
   return (
     <div className="service-center-category">
@@ -16,8 +28,8 @@ export const ServiceCenterCategory = (props) => {
       </div>
 
       <div className="service-center-category-services">
-        {all_service_centers.map((item, i) => {
-          return (
+        {Array.isArray(all_service_centers) ? (
+          all_service_centers.map((item, i) => (
             <Item
               key={i}
               id={item.id}
@@ -32,8 +44,11 @@ export const ServiceCenterCategory = (props) => {
               // reviews={item.reviews}
               verificationStatus={item.verificationStatus}
             />
-          );
-        })}
+          ))
+        ) : (
+          // Render something else or nothing if all_service_centers is not an array
+          <div>No services found</div>
+        )}
       </div>
     </div>
   );

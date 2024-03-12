@@ -1,0 +1,18 @@
+.admin {
+    display: flex;
+    min-height: 732px;
+}
+
+.admin-upper {
+    min-width: 400px;
+}
+
+.admin-lower > .list-service-center {
+    margin: 30px 0;
+}
+
+@media (max-width:800px) {
+    .admin {
+        flex-direction: column;
+    }
+}

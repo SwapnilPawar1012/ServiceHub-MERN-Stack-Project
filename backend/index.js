@@ -17,7 +17,7 @@ app.use(cors());
 // Database connect with MongoDB
 mongoose
   .connect(
-    "mongodb+srv://swapnilpawar9870:Swapnil10@cluster0.zv8livl.mongodb.net/service-hub",
+    `mongodb+srv://${process.env.DB_ID}:${process.env.DB_PASS}@cluster0.zv8livl.mongodb.net/service-hub`,
     {
       connectTimeoutMS: 30000, // Increase connection timeout
       socketTimeoutMS: 45000, // Increase socket timeout
@@ -159,6 +159,11 @@ const ServiceCenterSchema = mongoose.model("ServiceCenter", {
 
   reviews: [
     {
+      reviewerId: {
+        type: Number,
+        required: true,
+        trim: true,
+      },
       reviewer: {
         type: String,
         required: true,
@@ -205,69 +210,6 @@ const ServiceCenterSchema = mongoose.model("ServiceCenter", {
   ],
 });
 
-app.post("/addservicecenter", async (req, res) => {
-  let serviceCenters = await ServiceCenterSchema.find({});
-  let id;
-  if (serviceCenters.length > 0) {
-    let last_serviceCenter_array = serviceCenters.slice(-1);
-    let last_serviceCenter = last_serviceCenter_array[0];
-    id = last_serviceCenter.id + 1;
-  } else {
-    id = 1;
-  }
-
-  const serviceCenter = new ServiceCenterSchema({
-    id: id,
-    name: req.body.name,
-    description: req.body.description,
-    category: req.body.category,
-    image: req.body.image,
-    address: req.body.address,
-    location: req.body.location,
-    servicesOffered: req.body.servicesOffered,
-    operatingHours: req.body.operatingHours,
-    contact: req.body.contact,
-    ratings: req.body.ratings,
-    reviews: req.body.reviews,
-    verificationStatus: req.body.verificationStatus,
-    discounts: req.body.discounts,
-  });
-
-  console.log(serviceCenter);
-  await serviceCenter.save();
-  console.log("Saved");
-  res.json({
-    success: true,
-    name: req.body.name,
-  });
-});
-
-// Creating API for deleting service center
-app.post("/removeservicecenter", async (req, res) => {
-  await ServiceCenterSchema.findOneAndDelete({ id: req.body.id });
-  console.log("Removed");
-  res.json({
-    success: true,
-    name: req.body.name,
-  });
-});
-
-// Creating API for getting all service centers
-app.get("/allservicecenters", async (req, res) => {
-  let serviceCenter = await ServiceCenterSchema.find({});
-  console.log("All Service Centers Fetched");
-  res.send(serviceCenter);
-});
-
-//***** Creating API for getting Specific Category Service Centers
-app.get("/specificservicecenter", async (req, res) => {
-  let serviceCenter = await ServiceCenterSchema.find({
-    category: req.body.category,
-  });
-  console.log("Specific Service Centers");
-  res.send(serviceCenter);
-});
-
 // Schema for Creating User
 const UserSchema = mongoose.model("User", {
   username: {
@@ -288,6 +230,14 @@ const UserSchema = mongoose.model("User", {
     required: true,
     trim: true,
   },
+  serviceCenterData: [
+    {
+      type: Number,
+      required: true,
+      ref: "ServiceCenter",
+      trim: true,
+    },
+  ],
   reviewsData: [
     {
       serviceCenterId: {
@@ -338,6 +288,7 @@ app.post("/signup", async (req, res) => {
       username: req.body.username,
       email: req.body.email,
       password: hashedPassword,
+      serviceCenterData: req.body.serviceCenterData,
       reviewsData: req.body.reviewsData,
     });
     console.log(user);
@@ -397,6 +348,71 @@ const fetchUser = async (req, res, next) => {
   }
 };
 
+app.post("/addservicecenter", fetchUser, async (req, res) => {
+  let serviceCenters = await ServiceCenterSchema.find({});
+  let id = serviceCenters.length > 0 ? serviceCenters.slice(-1)[0].id + 1 : 1;
+
+  const serviceCenter = new ServiceCenterSchema({
+    id: id,
+    name: req.body.name,
+    description: req.body.description,
+    category: req.body.category,
+    image: req.body.image,
+    address: req.body.address,
+    location: req.body.location,
+    servicesOffered: req.body.servicesOffered,
+    operatingHours: req.body.operatingHours,
+    contact: req.body.contact,
+    ratings: req.body.ratings,
+    reviews: req.body.reviews,
+    verificationStatus: req.body.verificationStatus,
+    discounts: req.body.discounts,
+  });
+
+  console.log(serviceCenter);
+  await serviceCenter.save();
+  console.log("Saved");
+  res.json({
+    success: true,
+    name: req.body.name,
+  });
+});
+
+// app.post("/addratingsandreviews", async (req, res) => {
+//   let serviceCenterRatingAndReview = await ServiceCenterSchema.find({
+//     reviewerId: req.body.id,
+//   });
+//   console.log(serviceCenterRatingAndReview);
+//   // if (serviceCenterRatingAndReview) {
+//   // }
+// });
+
+// Creating API for deleting service center
+app.post("/removeservicecenter", async (req, res) => {
+  await ServiceCenterSchema.findOneAndDelete({ id: req.body.id });
+  console.log("Removed");
+  res.json({
+    success: true,
+    name: req.body.name,
+  });
+});
+
+// Creating API for getting all service centers
+app.get("/allservicecenters", async (req, res) => {
+  let serviceCenter = await ServiceCenterSchema.find({});
+  // console.log("All Service Centers Fetched " + serviceCenter);
+  res.send(serviceCenter);
+});
+
+//***** Creating API for getting Specific Category Service Centers
+app.get("/specificservicecenter", async (req, res) => {
+  let serviceCenter = await ServiceCenterSchema.find({
+    category: req.body.category,
+  });
+  // console.log("Specific Service Centers");
+  res.send(serviceCenter);
+});
+
 // Creating endpoint for adding service centers in reviewsData section
 app.post("/addreviewsdata", fetchUser, async (req, res) => {
   console.log(req.body, req.user);
@@ -430,99 +446,10 @@ app.post("/getreviewsdata", fetchUser, async (req, res) => {
   res.json(userData.reviewsData);
 });
 
-// Schema for Creating Partner User
-const PartnerUserSchema = mongoose.model("PartnerUser", {
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-  },
-  email: {
-    type: String, // Data type of the email field must be a string.
-    required: true, // This field is mandatory; a document cannot be saved without this field.
-    unique: true, // Each value for email must be unique across all documents in the collection.
-    trim: true, // Automatically remove leading and trailing whitespace from the email string.
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  serviceCenterData: [
-    {
-      type: Number,
-      required: true,
-      ref: "ServiceCenter",
-      trim: true,
-    },
-  ],
-});
-
-// Creating Endpoint for registering the partner user
-app.post("/partnersignup", async (req, res) => {
-  try {
-    let check = await PartnerUserSchema.findOne({ email: req.body.email });
-    if (check) {
-      return res.status(400).json({
-        success: false,
-        error: "existing user found with same email address",
-      });
-    }
-
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
-    const user = new PartnerUserSchema({
-      username: req.body.username,
-      email: req.body.email,
-      password: hashedPassword,
-      serviceCenterData: req.body.serviceCenterData,
-    });
-    console.log(user);
-    await user.save();
-    console.log("partner user saved");
-
-    const data = {
-      user: {
-        id: user.id,
-      },
-    };
-
-    const token = jwt.sign(data, process.env.JWT_SECRET, { expiresIn: "1h" });
-    res.json({ success: true, token });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Error registering new user");
-  }
-});
-
-// Creating endpoint for partner user login
-app.post("/partnerlogin", async (req, res) => {
-  let user = await PartnerUserSchema.findOne({ email: req.body.email });
-  if (user) {
-    // Verify password
-    const isMatch = await bcrypt.compare(req.body.password, user.password);
-    if (isMatch) {
-      const data = {
-        user: {
-          id: user.id,
-        },
-      };
-      console.log("login");
-      const token = jwt.sign(data, process.env.JWT_SECRET, { expiresIn: "1h" });
-      res.json({ success: true, token });
-    } else {
-      res.status(400).json({ success: false, error: "Wrong Password" });
-    }
-  } else {
-    res.status(400).json({ success: false, error: "Wrong Email Id" });
-  }
-});
-
 // Creating endpoint for adding service centers in reviewsData section
 app.post("/addservicecenterdata", fetchUser, async (req, res) => {
   console.log(req.body, req.user);
-  let userData = await PartnerUserSchema.findOne({ _id: req.user.id });
+  let userData = await UserSchema.findOne({ _id: req.user.id });
   userData.serviceCenterData[req.body.itemId] += 1;
   await UserSchema.findOneAndUpdate(
     { _id: req.user.id },

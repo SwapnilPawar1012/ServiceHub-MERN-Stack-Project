@@ -9,6 +9,8 @@ export const LoginSignup = () => {
     email: "",
   });
 
+  console.log(formData);
+
   const changeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
