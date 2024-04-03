@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import "./CSS/LoginSignup.css";
+import { useAuth } from "../Context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export const LoginSignup = () => {
+  const navigate = useNavigate();
+
+  const { loginStatus, isAdminPanel } = useAuth();
   const [state, setState] = useState("Login");
   const [formData, setFormData] = useState({
     username: "",
@@ -30,7 +35,8 @@ export const LoginSignup = () => {
 
     if (responseData.success) {
       localStorage.setItem("auth-token", responseData.token);
-      window.location.replace("/");
+      loginStatus(true);
+      navigate(isAdminPanel ? "/admin" : "/");
     } else {
       alert(responseData.error);
     }
@@ -51,7 +57,8 @@ export const LoginSignup = () => {
 
     if (responseData.success) {
       localStorage.setItem("auth-token", responseData.token);
-      window.location.replace("/");
+      loginStatus(true);
+      navigate(isAdminPanel ? "/admin" : "/");
     } else {
       alert(responseData.error);
     }

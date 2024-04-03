@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import jwt_decode from "jwt-decode";
+import React, { useState } from "react";
+import { jwtDecode } from "jwt-decode";
 import { BasicInfoForm } from "./FormPages/BasicInfoForm";
 import { LocationDetailsForm } from "./FormPages/LocationDetailsForm";
 import { ServiceDetailsForm } from "./FormPages/ServiceDetailsForm";
@@ -7,10 +7,14 @@ import { OperationalInformationForm } from "./FormPages/OperationalInformationFo
 import { ContactInformationForm } from "./FormPages/ContactInformationForm";
 import { DiscountsDetailsForm } from "./FormPages/DiscountsDetailsForm";
 import { Sidebar } from "../Admin/Sidebar";
+import { useNavigate } from "react-router-dom";
 
 export const AddServiceCenter = () => {
+  const { navigate } = useNavigate();
+
   const [currentPage, setCurrentPage] = useState(1);
   const [serviceCenterDetails, setServiceCenterDetails] = useState({
+    userId: "",
     name: "",
     description: "",
     category: "",
@@ -40,10 +44,6 @@ export const AddServiceCenter = () => {
     verificationStatus: "Pending", // Assuming a default verification status; adjust as necessary
     discounts: [], // Initialize as an empty array; specific discounts can be added later
   });
-
-  const token = localStorage.getItem("auth-token");
-  console.log("Token:", token); // Add this to debug
-  console.log(serviceCenterDetails);
 
   // Method to send data to backend
   const AddServiceCenterDetails = async () => {
@@ -83,6 +83,7 @@ export const AddServiceCenter = () => {
         const data = await response.json();
         if (data.success) {
           alert("Service Center Added");
+          navigate("/admin");
         } else {
           alert("Failed to add service center");
         }
@@ -93,57 +94,22 @@ export const AddServiceCenter = () => {
     }
   };
 
-  // // Method to send data to backend
-  // const AddServiceCenterDetails = async () => {
-  //   let responseData;
-  //   let serviceCenter = serviceCenterDetails;
-
-  //   let formData = new FormData();
-  //   formData.append("service-center", image);
-
-  //   console.log("upload img");
-  //   await fetch("http://localhost:4000/upload", {
-  //     method: "POST",
-  //     headers: {
-  //       Accept: "application/json",
-  //     },
-  //     body: formData,
-  //   })
-  //     .then((resp) => {
-  //       if (!resp.ok) {
-  //         alert("image upload failed");
-  //         throw new Error("Network response was not ok: " + resp.statusText);
-  //       }
-  //       return resp.json();
-  //     })
-  //     .then((data) => {
-  //       responseData = data;
-  //     });
-
-  //   console.log("upload data");
-  //   if (responseData.success) {
-  //     serviceCenter.image = responseData.image_url;
-  //     console.log(serviceCenter);
-  //     await fetch("http://localhost:4000/addservicecenter", {
-  //       method: "POST",
-  //       headers: {
-  //         Accept: "application/json",
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(serviceCenter),
-  //     })
-  //       .then((resp) => resp.json())
-  //       .then((data) => {
-  //         data.success ? alert("Service Center Added") : alert("Failed");
-  //       });
-  //   }
-  // };
-
   const nextPage = () => {
     setCurrentPage(currentPage + 1);
   };
 
   const saveButton = () => {
+    let decoded;
+    const token = localStorage.getItem("auth-token");
+    console.log("token name : " + token);
+    if (token) {
+      decoded = jwtDecode(token);
+      console.log(decoded.user._id); // { sub: "1234567890", name: "John Doe", iat: 1516239022, ... }
+    }
+    setServiceCenterDetails((prevState) => ({
+      ...prevState,
+      userId: decoded.user._id,
+    }));
     handleAddServicesOffered();
   };
 

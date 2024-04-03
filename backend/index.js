@@ -63,6 +63,13 @@ const ServiceCenterSchema = mongoose.model("ServiceCenter", {
     trim: true,
   },
 
+  userId: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+  },
+
   name: {
     type: String,
     required: true,
@@ -273,20 +280,20 @@ const UserSchema = mongoose.model("User", {
 // ***** middleware
 const middleware = async (req, res, next) => {
   console.log("middleware");
-  const authHeader = req.header("auth-token");
+  const authHeader = req.headers["auth-token"];
   const token = authHeader && authHeader.split(" ")[1];
   console.log("token " + token);
   if (token == null) {
-    return res.sendStatus(401);
+    return res.sendStatus(401); // If no token is present, return 401 Unauthorized
   }
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
-      return res.sendStatus(403);
+      return res.sendStatus(403); // If the token is not valid, return 403 Forbidden
     }
-    req.user = user;
-    console.log("middleware : " + user);
-    next();
+    req.user = user; // Save the decoded user object from the token to req.user
+    console.log("middleware : " + JSON.stringify(user));
+    next(); // Continue to the next middleware or request handler
   });
 };
 
@@ -345,8 +352,6 @@ app.post("/login", async (req, res) => {
         },
       };
       const token = jwt.sign(data, process.env.JWT_SECRET, { expiresIn: "1h" });
-      console.log("login : " + token);
-      middleware();
       res.json({ success: true, token });
     } else {
       res.status(400).json({ success: false, error: "Wrong Password" });
@@ -355,6 +360,9 @@ app.post("/login", async (req, res) => {
     res.status(400).json({ success: false, error: "Wrong Email Id" });
   }
 });
+
+// Creating API to Logout user
+app.post("/logout", async (req, res) => {});
 
 // Creating middelware to fetch user
 const fetchUser = async (req, res, next) => {
@@ -373,12 +381,14 @@ const fetchUser = async (req, res, next) => {
 };
 
 app.post("/addservicecenter", fetchUser, async (req, res) => {
-  middleware();
+  const token = req.header("auth-token");
+  console.log("addservicecenter : " + token);
   let serviceCenters = await ServiceCenterSchema.find({});
   let id = serviceCenters.length > 0 ? serviceCenters.slice(-1)[0].id + 1 : 1;
 
   const serviceCenter = new ServiceCenterSchema({
     id: id,
+    userId: req.body.userId,
     name: req.body.name,
     description: req.body.description,
     category: req.body.category,
@@ -403,15 +413,6 @@ app.post("/addservicecenter", fetchUser, async (req, res) => {
   });
 });
 
-// app.post("/addratingsandreviews", async (req, res) => {
-//   let serviceCenterRatingAndReview = await ServiceCenterSchema.find({
-//     reviewerId: req.body.id,
-//   });
-//   console.log(serviceCenterRatingAndReview);
-//   // if (serviceCenterRatingAndReview) {
-//   // }
-// });
-
 // Creating API for deleting service center
 app.post("/removeservicecenter", async (req, res) => {
   await ServiceCenterSchema.findOneAndDelete({ id: req.body.id });
@@ -425,7 +426,15 @@ app.post("/removeservicecenter", async (req, res) => {
 // Creating API for getting all service centers
 app.get("/allservicecenters", async (req, res) => {
   let serviceCenter = await ServiceCenterSchema.find({});
-  // console.log("All Service Centers Fetched " + serviceCenter);
+  res.send(serviceCenter);
+});
+
+// Creating API for getting list of service centers of user
+app.get("/listservicecenter/:userID", async (req, res) => {
+  const id = req.params.userID.toString();
+  console.log("listservicecenter " + id);
+  let serviceCenter = await ServiceCenterSchema.find({ userId: id });
+  console.log(serviceCenter);
   res.send(serviceCenter);
 });
 

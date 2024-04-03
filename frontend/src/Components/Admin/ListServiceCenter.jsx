@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Item } from "../Item";
 import { Sidebar } from "../Admin/Sidebar";
+import { jwtDecode } from "jwt-decode";
 // import all_service_centers from "../Assets/all_service_centers";
 
 export const ListServiceCenter = () => {
   const [all_service_centers, setAllServiceCenters] = useState([]);
+  console.log("all : " + all_service_centers);
 
   const fetchInfo = async () => {
-    await fetch("http://localhost:4000/allservicecenters")
+    let decoded;
+    const token = localStorage.getItem("auth-token");
+    console.log("token name : " + token);
+    if (token) {
+      decoded = jwtDecode(token);
+      console.log(decoded.user._id); // { sub: "1234567890", name: "John Doe", iat: 1516239022, ... }
+    }
+    await fetch(`http://localhost:4000/listservicecenter/${decoded.user._id}`)
       .then((resp) => resp.json())
       .then((data) => {
         setAllServiceCenters(data);
