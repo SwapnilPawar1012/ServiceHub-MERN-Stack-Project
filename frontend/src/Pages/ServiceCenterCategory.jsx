@@ -3,9 +3,9 @@ import "./CSS/ServiceCenterCategory.css";
 import { Item } from "../Components/Item";
 // import all_service_centers from "../Assets/all_service_centers";
 
-export const ServiceCenterCategory = (props) => {
+export const ServiceCenterCategory = () => {
   const [all_service_centers, setAllServiceCenters] = useState([]);
-  console.log("all_service_centers " + all_service_centers);
+  // console.log("all_service_centers " + all_service_centers);
 
   const fetchInfo = async () => {
     await fetch("http://localhost:4000/allservicecenters")

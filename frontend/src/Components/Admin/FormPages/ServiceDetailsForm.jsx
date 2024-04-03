@@ -41,7 +41,7 @@ export const ServiceDetailsForm = ({
       <h3>SERVICE OFFERED DETAILS</h3>
       <div className="add-service-center-itemfield">
         <p>Services Offered</p>
-        <div className="add-service-center-inputfield">
+        <div className="add-service-center-inputfield-save">
           <input
             type="text"
             placeholder="Type here"

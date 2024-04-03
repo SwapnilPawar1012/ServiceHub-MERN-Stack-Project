@@ -9,7 +9,7 @@ import { ServiceCenter } from "./Components/ServiceCenter";
 import { Admin } from "./Pages/Admin";
 import { LoginSignup } from "./Pages/LoginSignup";
 import { AddServiceCenter } from "./Components/Admin/AddServiceCenter";
-import { ListServiceCenter } from "./Components/ListServiceCenter";
+import { ListServiceCenter } from "./Components/Admin/ListServiceCenter";
 
 const App = () => {
   return (

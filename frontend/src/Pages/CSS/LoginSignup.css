@@ -1,12 +1,9 @@
 .loginsignup-container {
+    background: var(--form-theme-1);
     width: 580px;
-    background: var(--bg-color-3);
     margin: 70px auto;
-    padding: 40px;
-}
-
-.loginsignup-container h1 {
-    margin: 20px 0px;
+    padding: 45px;
+    border: var(--border-1);
 }
 
 .loginsignup-fields {
@@ -17,30 +14,30 @@
 }
 
 .loginsignup-fields input {
-    height: 72px;
+    height: 50px;
     width: 100%;
-    padding-left: 20px;
-    border: 1px solid #c9c9c9;
+    padding-left: 16px;
+    border: var(--border-1);
     outline: none;
-    color: #5c5c5c;
+    color: #4f4f4f;
+    letter-spacing: 1px;
     font-size: 18px;
 }
 
 .loginsignup-container button {
     width: 100%;
-    height: 72px;
-    color: var(--color-2);
+    height: 50px;
+    /* color: var(--color-2); */
     background: var(--btn-bg-color-1);
     margin-top: 30px;
     border: none;
     font-size: 24px;
     font-weight: 500;
-    cursor: pointer;
 }
 
 .loginsignup-login {
     margin-top: 20px;
-    color: #5c5c5c;
+    /* color: #5c5c5c; */
     font-size: 18px;
     font-weight: 500;
 }

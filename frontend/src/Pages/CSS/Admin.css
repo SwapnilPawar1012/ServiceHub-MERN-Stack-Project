@@ -5,9 +5,10 @@
 
 .admin-upper {
     min-width: 400px;
+    box-shadow: 10px 0 5px -13px white;
 }
 
-.admin-lower > .list-service-center {
+.admin-lower>.list-service-center {
     margin: 30px 0;
 }
 

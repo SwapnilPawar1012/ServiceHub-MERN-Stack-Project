@@ -1,16 +1,15 @@
 import React from "react";
 import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 
-export const GoogleMapDisplay = (props) => {
-  const { service_center } = props;
+export const GoogleMapDisplay = ({ locationLatitude, locationLongitude }) => {
   const containerStyle = {
     width: "100%",
-    height: "600px",
+    height: "400px",
   };
 
   const center = {
-    lat: Number(service_center.location.latitude),
-    lng: Number(service_center.location.longitude),
+    lat: Number(locationLatitude),
+    lng: Number(locationLongitude),
   };
 
   const { isLoaded } = useJsApiLoader({

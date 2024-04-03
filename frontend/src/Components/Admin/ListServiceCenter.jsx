@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Item } from "./Item";
-import { Sidebar } from "./Sidebar";
+import { Item } from "../Item";
+import { Sidebar } from "../Admin/Sidebar";
 // import all_service_centers from "../Assets/all_service_centers";
 
 export const ListServiceCenter = () => {

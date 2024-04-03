@@ -1,20 +1,21 @@
 let all_product = [
   {
     id: 1,
-    name: "Service Center 1",
-    description: "Description Service Center 1",
+    name: "Sai Electrical And Electronic",
+    description: "Description Service Center 1 : Sai Electrical And Electronic",
     image: "http://localhost:4000/images/service-center_1708980437158.png",
     category: "automotive",
-    address: "Sample Address, City, State, Zip",
-    location: { latitude: "18.4529", longitude: "73.8652" },
+    address:
+      "Shop No. 10, near Katraj - Kondhwa Road, Gokul Nagar, Katraj, Pune, Maharashtra 411046",
+    location: { latitude: "18.453023", longitude: "73.873588" },
     servicesOffered: ["Automotive Repair", "Two-Wheeler Repairing"],
     operatingHours: {
       workingDays: { days: "monday - friday", hours: "07:30 AM - 08:00 PM" },
       nowWorkingDays: { days: "saturday - sunday" },
     },
     contact: {
-      phone: ["0123456789", "8308289810"],
-      email: "swapnil1@gmail.com",
+      phone: ["9876543210", "9234567890"],
+      email: "servicecenter@gmail.com",
       website: "http://www.google.com",
     },
     ratings: 0,

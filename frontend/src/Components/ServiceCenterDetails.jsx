@@ -9,8 +9,22 @@ import verification_status_icon from "../Assets/icons/patch-check.svg";
 import door_open_icon from "../Assets/icons/door-open.svg";
 import door_closed_icon from "../Assets/icons/door-closed.svg";
 
-export const ServiceCenterDetails = (props) => {
-  const { service_center } = props;
+export const ServiceCenterDetails = ({
+  image,
+  name,
+  description,
+  category,
+  verificationStatus,
+  servicesOffered,
+  address,
+  locationLatitude,
+  locationLongitude,
+  operatingHoursWorkingDays,
+  operatingHoursNonWorkingDays,
+  contact,
+}) => {
+  // const { service_center } = props;
+  // console.log("details : " + name);
 
   function verificationStatus(status) {
     if (status === "Verified") {
@@ -48,29 +62,23 @@ export const ServiceCenterDetails = (props) => {
   }
 
   return (
-    <div>
+    <div className="service-center-details-left-panel">
       <div className="service-center-details-left-upper">
         <div className="service-center-details-img">
           <p className="operatingStatus">Open</p>
-          <img
-            className="service-center-details-main-img"
-            src={service_center.image}
-            alt=""
-          />
+          <img className="service-center-details-main-img" src={image} alt="" />
         </div>
       </div>
 
       <div className="service-center-details-left-lower">
-        <p className="service-center-details-left-lower-heading">
-          {service_center.name}
-        </p>
+        <p className="service-center-details-left-lower-heading">{name}</p>
 
         <p>
           <span>
             <img className="icon" src={verification_status_icon} alt="" />
             {"   "}
           </span>
-          {verificationStatus(service_center.verificationStatus)}
+          {verificationStatus(verificationStatus)}
         </p>
 
         <p>
@@ -80,12 +88,20 @@ export const ServiceCenterDetails = (props) => {
           </span>
           <a
             className="link"
-            href={`https://www.google.com/maps?q=${service_center.address}`}
+            href={`https://www.google.com/maps?q=${address}`}
             target="_blank"
             rel="noopener noreferrer"
           >
-            {service_center.address}
+            {address}
           </a>
+        </p>
+
+        <p>
+          <span>
+            <img className="icon" src={verification_status_icon} alt="" />
+            {"   "}
+          </span>
+          {description}
         </p>
 
         <p>
@@ -95,11 +111,11 @@ export const ServiceCenterDetails = (props) => {
           </span>
           <a
             className="link"
-            href={`https://www.google.com/maps?q=${service_center.location.latitude},${service_center.location.longitude}`}
+            href={`https://www.google.com/maps?q=${locationLatitude},${locationLongitude}`}
             target="_blank"
+            rel="noreferrer"
           >
-            {service_center.location.latitude},{" "}
-            {service_center.location.longitude}
+            {locationLatitude}, {locationLongitude}
           </a>
         </p>
 
@@ -108,16 +124,7 @@ export const ServiceCenterDetails = (props) => {
             <img className="icon" src={service_offered_icon} alt="" />
             {"   "}
           </span>
-          <span>
-            {/* {service_center.servicesOffered.map((item, i) => {
-              return (
-                <span key={i}>
-                  {i === 0 ? "" : ", "}
-                  {item}
-                </span>
-              );
-            })} */}
-          </span>
+          <span>{servicesOffered.map((service) => service).join(", ")}</span>
         </p>
 
         <p>
@@ -125,15 +132,15 @@ export const ServiceCenterDetails = (props) => {
             <img className="icon" src={phone_icon} alt="" />
             {"   "}
           </span>
-          {service_center.contact.phone}
+          {contact.phone.map((phone) => phone).join(", ")}
         </p>
         <p>
           <span>
             <img className="icon" src={email_icon} alt="" />
             {"   "}
           </span>
-          <a className="link" href={service_center.contact.email}>
-            {service_center.contact.email}
+          <a className="link" href={contact.email}>
+            {contact.email}
           </a>
         </p>
         <p>
@@ -141,30 +148,25 @@ export const ServiceCenterDetails = (props) => {
             <img className="icon" src={website_icon} alt="" />
             {"   "}
           </span>
-          <a className="link" href={service_center.contact.website}>
-            {service_center.contact.website}
+          <a className="link" href={contact.website}>
+            {contact.website}
           </a>
         </p>
 
+        <p>
+          <span>
+            <img className="icon" src={door_open_icon} alt="" />
+          </span>
+          <span>{operatingHoursWorkingDays.days}</span> :{" "}
+          <span>{operatingHoursWorkingDays.hours}</span>
+        </p>
         <div className="operatingHours">
-          {/* {service_center.operatingHours.map((item, i) => {
-            return (
-              <p key={i} className={`operatingHours${i}`}>
-                {i === 0 ? (
-                  <span>
-                    <img className="icon" src={door_open_icon} alt="" />
-                  </span>
-                ) : (
-                  <span>
-                    <img className="icon" src={door_closed_icon} alt="" />
-                  </span>
-                )}
-                <p>
-                  <span>{item.days}</span> : <span>{item.hours}</span>
-                </p>
-              </p>
-            );
-          })} */}
+          <p>
+            <span>
+              <img className="icon" src={door_closed_icon} alt="" />
+            </span>
+            <span>{operatingHoursNonWorkingDays.days}</span>
+          </p>
         </div>
       </div>
     </div>

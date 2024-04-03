@@ -16,12 +16,15 @@ export const Navbar = () => {
       </div>
       <div className="nav-login-profile">
         <Link className="nav-admin" to={"/admin"}>
-          <button className="nav-btn" onClick={handleAdminClick}>
+          <button
+            className="nav-btn btn btn-primary"
+            onClick={handleAdminClick}
+          >
             Admin
           </button>
         </Link>
         <Link className="nav-login" to={"/loginsignup"}>
-          <button className="nav-btn">Login</button>
+          <button className="nav-btn btn btn-danger">Login</button>
         </Link>
         <div className="nav-profile">
           <img className="nav-profile_icon" src={user_profile_icon} alt="" />

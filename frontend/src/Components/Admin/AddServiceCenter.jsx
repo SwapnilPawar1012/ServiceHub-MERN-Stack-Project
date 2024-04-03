@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import jwt_decode from "jwt-decode";
 import { BasicInfoForm } from "./FormPages/BasicInfoForm";
 import { LocationDetailsForm } from "./FormPages/LocationDetailsForm";
@@ -6,7 +6,7 @@ import { ServiceDetailsForm } from "./FormPages/ServiceDetailsForm";
 import { OperationalInformationForm } from "./FormPages/OperationalInformationForm";
 import { ContactInformationForm } from "./FormPages/ContactInformationForm";
 import { DiscountsDetailsForm } from "./FormPages/DiscountsDetailsForm";
-import { Sidebar } from "../Sidebar";
+import { Sidebar } from "../Admin/Sidebar";
 
 export const AddServiceCenter = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -41,6 +41,8 @@ export const AddServiceCenter = () => {
     discounts: [], // Initialize as an empty array; specific discounts can be added later
   });
 
+  const token = localStorage.getItem("auth-token");
+  console.log("Token:", token); // Add this to debug
   console.log(serviceCenterDetails);
 
   // Method to send data to backend
@@ -66,7 +68,7 @@ export const AddServiceCenter = () => {
         console.log(serviceCenter);
 
         // const token = localStorage.getItem("token"); // Assuming the token is stored in localStorage
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("auth-token");
         console.log("Token:", token); // Add this to debug
 
         const response = await fetch("http://localhost:4000/addservicecenter", {

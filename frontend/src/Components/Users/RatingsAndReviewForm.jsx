@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import star_icon from "../Assets/star.svg";
-import rating_star_icon from "../Assets/rating-star.svg";
+import star_icon from "../../Assets/star.svg";
+import rating_star_icon from "../../Assets/rating-star.svg";
 
 export const RatingsAndReviewForm = () => {
   const [rating, setRating] = useState(0);

@@ -56,7 +56,7 @@ export const ContactInformationForm = ({
       <h3>CONTACT DETAILS</h3>
       <div className="add-service-center-itemfield">
         <p>Phone</p>
-        <div className="add-service-center-inputfield">
+        <div className="add-service-center-inputfield-save">
           <input
             type="tel"
             name="phone"

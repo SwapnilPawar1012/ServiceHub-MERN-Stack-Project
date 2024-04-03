@@ -270,6 +270,26 @@ const UserSchema = mongoose.model("User", {
   },
 });
 
+// ***** middleware
+const middleware = async (req, res, next) => {
+  console.log("middleware");
+  const authHeader = req.header("auth-token");
+  const token = authHeader && authHeader.split(" ")[1];
+  console.log("token " + token);
+  if (token == null) {
+    return res.sendStatus(401);
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.sendStatus(403);
+    }
+    req.user = user;
+    console.log("middleware : " + user);
+    next();
+  });
+};
+
 // Creating Endpoint for registering the user
 app.post("/signup", async (req, res) => {
   try {
@@ -291,13 +311,14 @@ app.post("/signup", async (req, res) => {
       serviceCenterData: req.body.serviceCenterData,
       reviewsData: req.body.reviewsData,
     });
-    console.log(user);
+    console.log(user._id);
     await user.save();
     console.log("user saved");
 
     const data = {
       user: {
         id: user.id,
+        _id: user._id, // MongoDB ID
       },
     };
 
@@ -311,6 +332,7 @@ app.post("/signup", async (req, res) => {
 
 // Creating endpoint for user login
 app.post("/login", async (req, res) => {
+  // console.log("user id : " + req.user.id);
   let user = await UserSchema.findOne({ email: req.body.email });
   if (user) {
     // Verify password
@@ -319,10 +341,12 @@ app.post("/login", async (req, res) => {
       const data = {
         user: {
           id: user.id,
+          _id: user._id, // MongoDB ID
         },
       };
-      console.log("login");
       const token = jwt.sign(data, process.env.JWT_SECRET, { expiresIn: "1h" });
+      console.log("login : " + token);
+      middleware();
       res.json({ success: true, token });
     } else {
       res.status(400).json({ success: false, error: "Wrong Password" });
@@ -349,6 +373,7 @@ const fetchUser = async (req, res, next) => {
 };
 
 app.post("/addservicecenter", fetchUser, async (req, res) => {
+  middleware();
   let serviceCenters = await ServiceCenterSchema.find({});
   let id = serviceCenters.length > 0 ? serviceCenters.slice(-1)[0].id + 1 : 1;
 
@@ -402,6 +427,22 @@ app.get("/allservicecenters", async (req, res) => {
   let serviceCenter = await ServiceCenterSchema.find({});
   // console.log("All Service Centers Fetched " + serviceCenter);
   res.send(serviceCenter);
+});
+
+// Creating API for getting a service center data
+app.get("/servicecenterdata/:service_centerID", async (req, res) => {
+  const { service_centerID } = req.params;
+  console.log("id : " + service_centerID);
+  const serviceCenter = await ServiceCenterSchema.findOne({
+    id: service_centerID,
+  });
+  // console.log(serviceCenter);
+
+  if (!serviceCenter) {
+    return res.status(404).send("Service Center not found");
+  }
+
+  res.json(serviceCenter);
 });
 
 //***** Creating API for getting Specific Category Service Centers
