@@ -23,9 +23,6 @@ export const ServiceCenterDetails = ({
   operatingHoursNonWorkingDays,
   contact,
 }) => {
-  // const { service_center } = props;
-  // console.log("details : " + name);
-
   function verificationStatus(status) {
     if (status === "Verified") {
       return <span style={{ color: "green" }}>Verified</span>;
@@ -79,6 +76,14 @@ export const ServiceCenterDetails = ({
             {"   "}
           </span>
           {verificationStatus(verificationStatus)}
+        </p>
+
+        <p>
+          <span>
+            <img className="icon" src={verification_status_icon} alt="" />
+            {"   "}
+          </span>
+          {category}
         </p>
 
         <p>

@@ -499,11 +499,11 @@ select option {
 
 
 /* ServiceCenterDisplay */
-.service-center-display-upper {
+.service-center-display-upper,
+.service-center-display-lower {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* grid-template-columns: 1fr 1fr; */
   margin: 50px;
   font-size: var(--font-size-3);
   gap: var(--gap-10);
@@ -541,23 +541,10 @@ select option {
   margin: 0px 0px 4px;
 }
 
-.service-center-display-lower {
-  width: 100%;
-  margin: 130px 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-7);
-}
-
-
 /* ServiceCenterDetails */
 .service-center-details-main-img {
   width: 500px;
   height: 500px;
-  /* display: flex;
-  width: 100%;
-  max-height: 450px;
-  object-fit: cover; */
 }
 
 .service-center-details-left-upper {
@@ -627,7 +614,6 @@ hr {
 }
 
 .card-item-container {
-  background: var(--container-theme-1);
   min-height: 230px;
   display: flex;
   gap: var(--gap-5);
@@ -639,10 +625,9 @@ hr {
   align-items: center;
   text-align: center;
   border: var(--border-1);
-  max-width: 500px;
+  width: 300px;
   padding: 15px 25px;
-  border-radius: var(--border-radius-6);
-  box-shadow: var(--box-shadow-2);
+  border-radius: var(--border-radius-4);
 }
 
 .card-item-heading {
@@ -672,6 +657,42 @@ hr {
 
 .carousel-click-img {
   display: flex;
+}
+
+
+/* Ratings And Reviews Admin Panel */
+.ratings {
+  display: flex;
+  justify-content: center;
+}
+
+.reviews-panel {
+  display: grid;
+  gap: var(--gap-1);
+}
+
+.reviews-panel hr {
+  width: 100%;
+}
+
+.review {
+  display: flex;
+  gap: var(--gap-3);
+  align-items: end;
+  font-variant: historical-ligatures;
+  /* border: 1px solid #999;
+  padding: 12px;
+  border-radius: 10px; */
+}
+
+.review .review-left .review-image img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.review .review-right .review-text {
+  font-size: var(--font-size-2);
 }
 
 

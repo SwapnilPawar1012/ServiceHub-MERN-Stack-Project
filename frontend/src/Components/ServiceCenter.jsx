@@ -3,12 +3,15 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { ServiceCenterDetails } from "./ServiceCenterDetails";
 import { GoogleMapDisplay } from "./GoogleMapDisplay";
-import { ReviewsAndRatings } from "./ReviewsAndRatings";
+import { ReviewsAndRatings } from "./Users/ReviewsAndRatings";
 import { RatingsAndReviewForm } from "./Users/RatingsAndReviewForm";
+import { useAuth } from "../Context/AuthContext";
+import { RatingsAndReviewAdmin } from "./Admin/RatingsAndReviewAdmin";
 
 export const ServiceCenter = () => {
-  // State to hold the fetched service center data
-  // Initialized to null, indicating data is not yet fetched or is unavailable
+  const { isAdminPanel, isReviewed } = useAuth();
+
+  // State to hold the fetched service center data, Initialized to null, indicating data is not yet fetched or is unavailable
   const [serviceCenter, setServiceCenter] = useState(null);
   console.log(
     "serviceCenter : " +
@@ -29,8 +32,6 @@ export const ServiceCenter = () => {
   const contact = serviceCenter?.contact;
   const ratings = serviceCenter?.ratings;
   const reviews = serviceCenter?.reviews;
-
-  // console.log(contact.email);
 
   // Extracting the service center ID from URL parameters
   const { service_centerID } = useParams();
@@ -59,11 +60,6 @@ export const ServiceCenter = () => {
     <div className="service-center">
       {serviceCenter ? (
         <div className="service-center-display">
-          {/* <img
-          className="service-center-details-main-img"
-          src={service_center}
-          alt=""
-        /> */}
           <div className="service-center-display-upper">
             <div className="service-center-display-left">
               <ServiceCenterDetails
@@ -98,10 +94,21 @@ export const ServiceCenter = () => {
               </a>
             </div>
           </div>
-          <div className="service-center-display-lower">
-            <RatingsAndReviewForm />
-            <ReviewsAndRatings ratings={ratings} reviews={reviews} />
-          </div>
+
+          {isAdminPanel ? (
+            <div className="service-center-display-lower">
+              <RatingsAndReviewAdmin ratings={ratings} reviews={reviews} />
+            </div>
+          ) : (
+            <div className="service-center-display-lower">
+              {isReviewed ? (
+                <></>
+              ) : (
+                <RatingsAndReviewForm service_centerID={service_centerID} />
+              )}
+              <ReviewsAndRatings ratings={ratings} reviews={reviews} />
+            </div>
+          )}
         </div>
       ) : (
         <div>Loading service center details...</div>

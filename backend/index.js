@@ -167,11 +167,6 @@ const ServiceCenterSchema = mongoose.model("ServiceCenter", {
   reviews: [
     {
       reviewerId: {
-        type: Number,
-        required: true,
-        trim: true,
-      },
-      reviewer: {
         type: String,
         required: true,
         trim: true,
@@ -219,24 +214,33 @@ const ServiceCenterSchema = mongoose.model("ServiceCenter", {
 
 // Schema for Creating User
 const UserSchema = mongoose.model("User", {
+  userImage: {
+    type: String,
+    // required: true,
+    trim: true,
+  },
+
   username: {
     type: String,
     required: true,
     unique: true,
     trim: true,
   },
+
   email: {
     type: String,
     required: true,
     unique: true,
     trim: true,
   },
+
   password: {
     // Store hashed passwords only
     type: String,
     required: true,
     trim: true,
   },
+
   serviceCenterData: [
     {
       type: Number,
@@ -245,6 +249,7 @@ const UserSchema = mongoose.model("User", {
       trim: true,
     },
   ],
+
   reviewsData: [
     {
       serviceCenterId: {
@@ -271,31 +276,12 @@ const UserSchema = mongoose.model("User", {
       },
     },
   ], // Embedding user reviews directly within the user document
+
   createdAt: {
     type: Date,
     default: Date.now,
   },
 });
-
-// ***** middleware
-const middleware = async (req, res, next) => {
-  console.log("middleware");
-  const authHeader = req.headers["auth-token"];
-  const token = authHeader && authHeader.split(" ")[1];
-  console.log("token " + token);
-  if (token == null) {
-    return res.sendStatus(401); // If no token is present, return 401 Unauthorized
-  }
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.sendStatus(403); // If the token is not valid, return 403 Forbidden
-    }
-    req.user = user; // Save the decoded user object from the token to req.user
-    console.log("middleware : " + JSON.stringify(user));
-    next(); // Continue to the next middleware or request handler
-  });
-};
 
 // Creating Endpoint for registering the user
 app.post("/signup", async (req, res) => {
@@ -312,6 +298,7 @@ app.post("/signup", async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
     const user = new UserSchema({
+      userImage: req.body.userImage || null,
       username: req.body.username,
       email: req.body.email,
       password: hashedPassword,
@@ -337,9 +324,7 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-// Creating endpoint for user login
 app.post("/login", async (req, res) => {
-  // console.log("user id : " + req.user.id);
   let user = await UserSchema.findOne({ email: req.body.email });
   if (user) {
     // Verify password
@@ -360,9 +345,6 @@ app.post("/login", async (req, res) => {
     res.status(400).json({ success: false, error: "Wrong Email Id" });
   }
 });
-
-// Creating API to Logout user
-app.post("/logout", async (req, res) => {});
 
 // Creating middelware to fetch user
 const fetchUser = async (req, res, next) => {
@@ -403,7 +385,6 @@ app.post("/addservicecenter", fetchUser, async (req, res) => {
     verificationStatus: req.body.verificationStatus,
     discounts: req.body.discounts,
   });
-
   console.log(serviceCenter);
   await serviceCenter.save();
   console.log("Saved");
@@ -411,6 +392,119 @@ app.post("/addservicecenter", fetchUser, async (req, res) => {
     success: true,
     name: req.body.name,
   });
+});
+
+// Creating API for update service center data reviews and rating
+app.post("/addservicecenterreview/:serviceCenterID", async (req, res) => {
+  const serviceCenterID = req.params.serviceCenterID;
+  try {
+    const exists = await ServiceCenterSchema.findOne({
+      id: serviceCenterID,
+      "reviews.reviewerId": req.body.reviewerId,
+    });
+
+    let result;
+    if (exists) {
+      // Update the existing review
+      result = await ServiceCenterSchema.findOneAndUpdate(
+        { id: serviceCenterID, "reviews.reviewerId": req.body.reviewerId },
+        {
+          $set: {
+            "reviews.$.reviewText": req.body.reviewText,
+            "reviews.$.rating": req.body.rating,
+          },
+        },
+        { new: true }
+      );
+      res.json({
+        success: true,
+        message: "Review updated successfully",
+      });
+    } else {
+      // Add a new review
+      result = await ServiceCenterSchema.findOneAndUpdate(
+        { id: serviceCenterID },
+        {
+          $push: {
+            reviews: {
+              reviewerId: req.body.reviewerId,
+              reviewText: req.body.reviewText,
+              rating: req.body.rating,
+            },
+          },
+          $inc: {
+            ratings: 1,
+          },
+        },
+        { new: true }
+      );
+      res.json({
+        success: true,
+        message: "Review added successfully",
+      });
+    }
+  } catch (error) {
+    console.error("Failed to update service center review:", error);
+    res.status(500).send("An error occurred while updating the review.");
+  }
+});
+
+// Creating API for update user reviews and rating data
+app.post("/adduserreview/:userId", async (req, res) => {
+  const userID = req.params.userId;
+  try {
+    const exists = await UserSchema.findOne({
+      _id: userID,
+      "reviewsData.serviceCenterId": req.body.serviceCenterID,
+    });
+
+    let result;
+    if (exists) {
+      // Update the existing review
+      result = await UserSchema.findOneAndUpdate(
+        {
+          _id: userID,
+          "reviewsData.serviceCenterId": req.body.serviceCenterID,
+        },
+        {
+          $set: {
+            "reviewsData.$.reviewText": req.body.reviewText,
+            "reviewsData.$.rating": req.body.rating,
+          },
+        },
+        { new: true }
+      );
+      res.json({
+        success: true,
+        message: "User review updated successfully",
+      });
+    } else {
+      // Add a new review
+      result = await UserSchema.findOneAndUpdate(
+        { _id: userID },
+        {
+          $push: {
+            reviewsData: {
+              serviceCenterId: req.body.serviceCenterID,
+              reviewText: req.body.reviewText,
+              rating: req.body.rating,
+            },
+          },
+          $inc: {
+            reviewCount: 1,
+          },
+        },
+        { new: true }
+      );
+      res.json({
+        success: true,
+        message: "User review added successfully",
+      });
+    }
+  } catch (error) {
+    console.error("Failed to update user review:", error);
+    res.status(500).send("An error occurred while updating the review.");
+  }
 });
 
 // Creating API for deleting service center
@@ -452,27 +546,6 @@ app.get("/servicecenterdata/:service_centerID", async (req, res) => {
   }
 
   res.json(serviceCenter);
-});
-
-//***** Creating API for getting Specific Category Service Centers
-app.get("/specificservicecenter", async (req, res) => {
-  let serviceCenter = await ServiceCenterSchema.find({
-    category: req.body.category,
-  });
-  // console.log("Specific Service Centers");
-  res.send(serviceCenter);
-});
-
-// Creating endpoint for adding service centers in reviewsData section
-app.post("/addreviewsdata", fetchUser, async (req, res) => {
-  console.log(req.body, req.user);
-  let userData = await UserSchema.findOne({ _id: req.user.id });
-  userData.reviewsData[req.body.itemId] += 1;
-  await UserSchema.findOneAndUpdate(
-    { _id: req.user.id },
-    { reviewsData: userData.reviewsData }
-  );
-  res.send("Added");
 });
 
 // Creating endpoint for remove service center from reviewsData

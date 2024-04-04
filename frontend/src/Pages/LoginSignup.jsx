@@ -9,6 +9,7 @@ export const LoginSignup = () => {
   const { loginStatus, isAdminPanel } = useAuth();
   const [state, setState] = useState("Login");
   const [formData, setFormData] = useState({
+    userImage: "",
     username: "",
     password: "",
     email: "",

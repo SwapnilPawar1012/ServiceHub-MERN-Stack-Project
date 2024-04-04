@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import star_icon from "../Assets/star.svg";
-import carousel_icon from "../Assets/icons/play.svg";
-// import previous_icon from "../Assets/icons/previous.svg";
-// import next_icon from "../Assets/icons/next.svg";
+import star_icon from "../../Assets/star.svg";
+import carousel_icon from "../../Assets/icons/play.svg";
+// import previous_icon from "../../Assets/icons/previous.svg";
+// import next_icon from "../../Assets/icons/next.svg";
 
 export const ReviewsAndRatings = ({ ratings, reviews }) => {
   function Stars({ ratings }) {
@@ -34,10 +34,7 @@ export const ReviewsAndRatings = ({ ratings, reviews }) => {
   };
 
   // Calculate the reviews to be displayed
-  const displayedReviews = reviews.slice(
-    currentIndex,
-    currentIndex + 3
-  );
+  const displayedReviews = reviews.slice(currentIndex, currentIndex + 3);
 
   return (
     <div className="review-card-item">

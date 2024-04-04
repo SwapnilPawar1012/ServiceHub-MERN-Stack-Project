@@ -65,11 +65,10 @@ export const AddServiceCenter = () => {
 
       if (responseData.success) {
         serviceCenter.image = responseData.image_url;
-        console.log(serviceCenter);
 
         // const token = localStorage.getItem("token"); // Assuming the token is stored in localStorage
         const token = localStorage.getItem("auth-token");
-        console.log("Token:", token); // Add this to debug
+        // console.log("Token:", token); // Add this to debug
 
         const response = await fetch("http://localhost:4000/addservicecenter", {
           method: "POST",
